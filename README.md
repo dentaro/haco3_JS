@@ -2,6 +2,9 @@
 
 こちらはJavaScript版です。
 
+lua版はこちらです。
+https://github.com/dentaro/haco3
+
 letro_game_engin in JavaScript for esp32 
 
 「ハコさん」というキャラが大活躍する（はずの）esp32で動くレトロゲームエンジンを開発中です。
