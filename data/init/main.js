@@ -62,11 +62,11 @@ loop = function(){
   color(0,0,0)
   fillrect(0,0,128,128)
   //背景を描く
-  for (var i = 0; i<15; i++){
-     for (var j = 0; j<15; j++){
-       spr(i*8, j*8, 8, 8, 8*1, 8*13)
-     }
-  }
+  // for (var i = 0; i<15; i++){
+  //    for (var j = 0; j<15; j++){
+  //      spr(i*8, j*8, 8, 8, 8*1, 8*13)
+  //    }
+  // }
 　if(btn(0) > 0){walk = 0;step = 1;x -= step;}
 　if(btn(1) > 0){walk = 0;step = 1;x += step;}
 　if(btn(2) > 0){walk = 0;step = 1;y -= step;}
