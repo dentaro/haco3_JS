@@ -5,7 +5,8 @@
 #include <SPIFFS.h>
 #include "LovyanGFX_DentaroUI.hpp"
 
-#include "TouchBtn.hpp"
+#include "PhysicBtn.hpp"//物理ボタン用
+#include "TouchBtn.hpp"//タッチボタン用
 #include <deque>
 
 #include <stdio.h>
@@ -300,71 +301,6 @@ class MapTile
 class LovyanGFX_DentaroUI {
   
    private:
-   
-    String kanalist[HENKAN_NUM][3] = {
-  {"あ","ぁ","＿"},
-  {"い","ぃ","ゐ"},
-  {"う","ぅ","＿"},
-  {"え","ぇ","ゑ"},
-  {"お","ぉ","＿"},
-  {"か","が","＿"},
-  {"き","ぎ","＿"},
-  {"く","ぐ","＿"},
-  {"け","げ","＿"},
-  {"こ","ご","＿"},
-  
-  {"さ","ざ","＿"},
-  {"し","じ","＿"},
-  {"す","ず","＿"},
-  {"せ","ぜ","＿"},
-  {"そ","ぞ","＿"},
-  {"た","だ","＿"},
-  {"ち","ぢ","＿"},
-  {"つ","っ","づ"},
-  {"て","で","＿"},
-  {"と","ど","＿"},
-  
-  {"は","ば","ぱ"},
-  {"ひ","び","ぴ"},
-  {"ふ","ぶ","ぷ"},
-  {"へ","べ","ぺ"},
-  {"ほ","ぼ","ぽ"},
-  {"や","ゃ","＿"},
-  {"ゆ","ゅ","＿"},
-  {"よ","ょ","＿"},
-  {"ー","～","＿"},
-
-  {"ア","ァ","＿"},
-  {"イ","ィ","ヰ"},
-  {"ウ","ゥ","＿"},
-  {"エ","ェ","ヱ"},
-  {"オ","ォ","＿"},
-  {"カ","ガ","＿"},
-  {"キ","ギ","＿"},
-  {"ク","グ","＿"},
-  {"ケ","ゲ","＿"},
-  {"コ","ゴ","＿"},
-  
-  {"サ","ザ","＿"},
-  {"シ","ジ","＿"},
-  {"ス","ズ","＿"},
-  {"セ","ゼ","＿"},
-  {"ソ","ゾ","＿"},
-  {"タ","ダ","＿"},
-  {"チ","ヂ","＿"},
-  {"ツ","ッ","ヅ"},
-  {"テ","デ","＿"},
-  {"ト","ド","＿"},
-  
-  {"ハ","バ","パ"},
-  {"ヒ","ビ","ピ"},
-  {"フ","ブ","プ"},
-  {"ヘ","ベ","ペ"},
-  {"ホ","ボ","ポ"},
-  {"ヤ","ャ","＿"},
-  {"ユ","ュ","＿"},
-  {"ヨ","ョ","＿"},
-};
 
     lgfx::v1::touch_point_t tp;
     lgfx::v1::touch_point_t sp;
@@ -389,9 +325,6 @@ class LovyanGFX_DentaroUI {
     bool availableF = false;
     int uiMode = TOUCH_MODE;
     std::deque<TouchBtn*> touch_btn_list; //ボタン配置用デック配列
-    std::deque<TouchBtn*> flick_touch_btn_list; //フリックボタン配置用デック配列
-    std::deque<FlickPanel*> flickPanels;
-    int showFlickPanelNo = 0;
 
     int timeCnt = 0;
     uint16_t clist[5] = {0,0,0,0,0};
@@ -400,127 +333,22 @@ class LovyanGFX_DentaroUI {
     int uiBoxes_num = 0;
     // std::deque<UiContainer> uiBoxes;
     UiContainer uiBoxes[20];
-    UiContainer flickPanel;
     int layoutSprite_w = 0;
     int layoutSprite_h = 0;
     bool toggle_mode = false;
-    // LGFX_Sprite g_basic_sprite;
-    //LGFX_Sprite g_basic_sprite_list[9];
-    // MapTile* MapTiles[9];
-    String m_url = "";
     RetClass obj_ret;
-    int shiftNum = 3;
-    int charMode = CHAR_3_BYTE; //日本語
-    //int charMode = CHAR_1_BYTE; //英語
 
-    int charNumMode = CHAR_3_BYTE_5;//日本語5文字
     int sec, psec;
     int fps = 0;
     int frame_count = 0;
-    // bool use_flickUiSpriteF = false;
-    // int charNo=0;
-    // String flickString = "";
-    // String flickStr = "";
-    // String flickStrDel = "";
-    // String preFlickChar = "";
-    // String previewFlickChar = "";
-    // String finalChar ="";
-    // int fpNo = 0;
-    // int kanaShiftNo = 0;
-    // bool selectModeF = false;
-    // int curbtnID;//現在の行番号
-    // int curKanaRowNo = 0;
-    // int curKanaColNo = 0;
     bool touchCalibrationF = false;
-
-    // int TopBtnUiID = 0;
-    // int LeftBtnUiID = 0;
-    // int RightBtnUiID = 0;
-    // int FlickUiID = 0;
-
-    // bool uiOpenF = true
-
-
-    // bool DownloadF = false;
-    // bool mataidaF =false;
-    // double latPos = 35.667995;
-    // double lonPos = 139.7532971887966;//139.642076;
-    // int tileZoom = 15;//8; //座標計算用
-
-    // int xtile = 0;
-    // int ytile = 0;
-    // int ztile = 0;
-    // int xtileNo = 0;
-    // int ytileNo = 0;
-
-    // int dirID = 0;
-
-    // int preXtileNo = 0;
-    // int preYtileNo = 0;
-    // int preXtile = 0;
-    // int preYtile = 0;
-
-    // int preDirID = 0;
-
-    // float vx = 0;
-    // float vy = 0;
-    // String host = "";
-
-    
-
-    //dirID
-    //|6|7|8|
-    //|5|0|1|
-    //|4|3|2|
-    // int mapNolist[9][2];
-    // int tilePositons[9][4];
-    int mapNoArray[9]= {-1,-1,-1,-1,-1,-1,-1,-1,-1};
-
-    float matrix[6];
-    float matrix_list[9][6] = {
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0},
-      {1.0, 0.0, 0,  0.0, 1.0, 0}
-    };
-
-    //        //dirID
-    //        //|6|7|8|
-    //        //|5|0|1|
-    //        //|4|3|2|
-    int addTPosList[9][2] = {
-      { 0, 0},{ 1, 0},{ 0, 1},
-      { -1,0},{ 0,-1},{ 1,-1},
-      {1, 1},{-1,1},{ -1,-1}
-    };
-    
-    //int altIdList[9] = {4,5,7,3,1,2,8,6,0};
-
-    //bool existStateF[9] = {true,true,true,true,true,true,true,true,true};
-    //bool existStateF[9] = {false,false,false,false,false,false,false,false,false};
-
-    int gPosId = -1;
-
-    //std::list<int> preReadXtileNo ={};
-    //std::list<int> preReadYtileNo ={};
-    int preReadXtileNo[9];
-    int preReadYtileNo[9];
-
-    bool allpushF = false;
-    int ecnt = 0;
-    
-    String ROI_m_url ="";
 
     int touchZoom = 1;
 
-public:
-LGFX_Sprite layoutSprite_list[BUF_PNG_NUM];
+    PhysicBtn phbs;
 
+public:
+    LGFX_Sprite layoutSprite_list[BUF_PNG_NUM];
     LovyanGFX_DentaroUI( LGFX* _lcd );
     LGFX* lcd;
     LovyanGFX* lgfx;
@@ -579,8 +407,8 @@ LGFX_Sprite layoutSprite_list[BUF_PNG_NUM];
     void setAvailableF(int uiID, int _btnID, bool _available);
     void setAllBtnVisibleF(int uiID, bool _visible);
     void setVisibleF(int uiID, int _btnID, bool _visible);
-    void setCharMode(int _charMode);
-    int getCharMode();
+    // void setCharMode(int _charMode);
+    // int getCharMode();
     void changeBtnMode(int _uiID, int _btnID, int _btn_mode);
     int getUiFirstNo(int _uiID);
     int getUiBtnNum(int _uiID);
@@ -588,7 +416,15 @@ LGFX_Sprite layoutSprite_list[BUF_PNG_NUM];
     int getAllBtnNum();
     int getParentID();
     int getUiID( const char* _uiLabel );
+
     lgfx::v1::touch_point_t getBtnPos(int _btnID);
     void showInfo( LovyanGFX& _lgfx, int _infox, int _infoy);
     std::vector<std::string> split_mb(const char* src, const char* del);
+
+    void setupPhBtns(LovyanGFX& _lcd, int pfbNo0, int pfbNo1, int pfbNo2 );
+    void updatePhBtns();
+    const bits_btn_t*  getStack();
+    std::uint32_t getHitValue();
+    void drawPhBtns(LovyanGFX& _lcd);
+
 };

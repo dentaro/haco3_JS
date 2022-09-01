@@ -12,7 +12,9 @@
 //M5stackなどの製品で使用するときはAUTODETECTを使って下さい。
 //#include <LGFX_AUTODETECT.hpp>
 //自作基板などで、AUTODETECTの代わりにカスタム設定を使いたいときはこちらを編集して下さい。
-#include "LGFX_ESP32_custom_sample.hpp"
+// #include "LGFX_ESP32_custom_sample.hpp"
+
+#include "LGFX_ESP32_custom_2432S028R.hpp"
 
 using namespace std;
 
@@ -88,28 +90,28 @@ class Delegate2 : public DelegateBase2 {
   public:
     Delegate2(){};
     virtual ~Delegate2(){};
-  
+
     // オペレータ実装
     virtual int operator()( int value0 ) {   // 関数プロトタイプ「int xxx(int);」
       (m_obj->*m_func)(value0);   // ハンドラ実行：関数プロトタイプ「int xxx(int);」
       return ( value0 );
     }
     typedef int (T::*EventFunc)(int);    // 関数プロトタイプ「int xxx(int);」
-    
-  
+
+
     // オブジェクトとメソッドを登録
     void set( T* obj, EventFunc func ) {
       m_obj = obj;
       m_func = func;
     }
-  
+
     // デリゲータ生成関数
     static DelegateBase2* createDelegator2( T* obj, EventFunc func ) {
       Delegate2* dg = new Delegate2;
       dg->set( obj, func );
       return dg;
     }
-  
+
   protected:
     T* m_obj;               // オブジェクト
     EventFunc m_func;       // 関数ポインタ
@@ -136,11 +138,11 @@ class TouchBtn {
 
     float b_str_hw = 4;//文字列の半分の長さを計算
 
-    
+
     int sliderPosx = 0;
     int sliderPosy = 0;
     int xy_mode = XY_VAL;
-    
+
     uint8_t bgColorIndex;
     LGFX_Sprite divSprite0;
     uint16_t color = TFT_WHITE;
@@ -155,7 +157,7 @@ class TouchBtn {
     uint8_t bgColIndex = 0;
     bool availableF = false;
     bool visibleF = false;
-    
+
     int btn_mode = TOUCH_NONE_MODE;
     bool toggleVal = false;
 
@@ -179,12 +181,12 @@ public:
     lgfx::v1::touch_point_t _spritePos,
     int _btn_mode);
     void setlayoutSpritePos(lgfx::v1::touch_point_t _layoutSpritePos);
-    void initSlider(int _btnID, int _s_x, int _s_y, int _s_w, int _s_h, String _btn_name, 
+    void initSlider(int _btnID, int _s_x, int _s_y, int _s_w, int _s_h, String _btn_name,
     lgfx::v1::touch_point_t _layoutSpritePos,
     lgfx::v1::touch_point_t _uiSpritePos,
     LGFX_Sprite& _sprite,
     int _visible_mode );
-    
+
     void initTile(int _btnID,String _btn_name, lgfx::v1::touch_point_t _layoutSpritePos, int layoutSprite_w, int layoutSprite_h, LGFX_Sprite& _layoutSprite, LGFX_Sprite& _g_basic_sprite);
     // void setBtnName(String _btnName);
     void setBtnNameFalse(String _btnNameFalse);
@@ -207,11 +209,11 @@ public:
 
     void setBtnName(String _btn_name);
     String getBtnName();
-    
+
     void setPngTile(fs::FS &fs, String _m_url, LGFX_Sprite& _g_basic_sprite);
     lgfx::v1::touch_point_t getTouchPoint(int _x, int _y);
     lgfx::v1::touch_point_t getBtnPos();
-    
+
     void setSelectBtnF(bool _selectBtnF);
     void switchToggleVal();
     //private対策

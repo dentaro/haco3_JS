@@ -8,6 +8,94 @@ LovyanGFX_DentaroUI::LovyanGFX_DentaroUI(LGFX* _lcd)
   lcd = _lcd;
 }
 
+void LovyanGFX_DentaroUI::setupPhBtns(LovyanGFX& _lcd, int pfbNo0, int pfbNo1, int pfbNo2 ){
+  phbs.setup(pfbNo0, pfbNo1, pfbNo2);
+
+}
+
+std::uint32_t LovyanGFX_DentaroUI::getHitValue(){
+  // コマンド判定結果を取得
+  return  phbs.getValue();
+}
+
+void LovyanGFX_DentaroUI::updatePhBtns()
+{
+  delay(1);
+  // 入力状態の更新（変化がなければ終了）
+  if (!phbs.loop()) return;
+
+  // コマンド判定結果を取得
+  static std::uint32_t hitvalue = ~0U;
+  std::uint32_t prev = hitvalue;
+  hitvalue = phbs.getValue();
+
+  // 以前の値と同じ場合は除外
+  if (prev == hitvalue) return;
+
+}
+const bits_btn_t*  LovyanGFX_DentaroUI::getStack()
+{
+  return phbs.getStack();
+}
+
+//上のupdateを視覚化しただけの処理（やってることは同じ）
+void LovyanGFX_DentaroUI::drawPhBtns(LovyanGFX& _lcd)
+{
+
+  // ボタン入力履歴を画面に描画
+        // auto stack = ui.getStack();
+        // for (std::size_t idx = 0; idx < BTN_STACK_MAX; ++idx)
+        // {
+        //   layoutSprite.fillRect(idx * 10, 30, 9, 9, (stack[idx] & bit_btn_a) ? TFT_RED   : TFT_DARKGREY);
+        //   layoutSprite.fillRect(idx * 10, 40, 9, 9, (stack[idx] & bit_btn_b) ? TFT_GREEN : TFT_DARKGREY);
+        //   layoutSprite.fillRect(idx * 10, 50, 9, 9, (stack[idx] & bit_btn_c) ? TFT_BLUE  : TFT_DARKGREY);
+        // }
+        
+  // phbs.loop();
+
+  delay(1);
+  // 入力状態の更新（変化がなければ終了）
+  // if (!phbs.loop()) return;
+
+  // ボタン入力履歴を画面に描画
+  auto stack = phbs.getStack();
+  for (std::size_t idx = 0; idx < BTN_STACK_MAX; ++idx)
+  {
+    _lcd.fillRect(idx * 5, 100, 4, 4, (stack[idx] & bit_btn_a) ? TFT_RED   : TFT_DARKGREY);
+    _lcd.fillRect(idx * 5, 105, 4, 4, (stack[idx] & bit_btn_b) ? TFT_GREEN : TFT_DARKGREY);
+    _lcd.fillRect(idx * 5, 110, 4, 4, (stack[idx] & bit_btn_c) ? TFT_BLUE  : TFT_DARKGREY);
+  }
+
+  // // コマンド判定結果を取得
+  // static std::uint32_t hitvalue = ~0U;
+  // std::uint32_t prev = hitvalue;
+  // hitvalue = phbs.getValue();
+
+  // // 以前の値と同じ場合は除外
+  // if (prev == hitvalue) return;
+
+  // // 入力内容を画面とシリアルに出力
+  // switch (hitvalue)
+  // {
+  // default:  _lcd.println("--"); break;
+  // case 101: _lcd.println("A click"); break;
+  // case 102: _lcd.println("B click"); break;
+  // case 103: _lcd.println("C click"); break;
+  // case 111: _lcd.println("A hold"); break;
+  // case 112: _lcd.println("B hold"); break;
+  // case 113: _lcd.println("C hold"); break;
+  // case 121: _lcd.println("A double click"); break;
+  // case 122: _lcd.println("B double click"); break;
+  // case 123: _lcd.println("C double click"); break;
+  // case 201: _lcd.println("AB hold"); break;
+  // case 202: _lcd.println("AC hold"); break;
+  // case 203: _lcd.println("BC hold"); break;
+  // case 204: _lcd.println("ABC hold"); break;
+  // case 301: _lcd.println("A->B->C"); break;
+  // }
+}
+
+
 void LovyanGFX_DentaroUI::begin( LGFX& _lcd, int _colBit, int _rotateNo, bool _calibF )
 {
   _lcd.init();
@@ -21,10 +109,10 @@ void LovyanGFX_DentaroUI::begin( LGFX& _lcd, int _colBit, int _rotateNo, bool _c
   {
     createLayout( 0, 0, 256, 256, layoutSprite_list[i], MULTI_EVENT );//レイアウト用のスプライトを作る
   }
-  for(int objId = 0; objId < BUF_PNG_NUM; objId++){
-    preReadXtileNo[objId] = -1;
-    preReadYtileNo[objId] = -1;
-  }
+  // for(int objId = 0; objId < BUF_PNG_NUM; objId++){
+  //   preReadXtileNo[objId] = -1;
+  //   preReadYtileNo[objId] = -1;
+  // }
 }
 
 void LovyanGFX_DentaroUI::begin( LGFX& _lcd)
@@ -159,12 +247,10 @@ void LovyanGFX_DentaroUI::runTouchCalibration(LGFX& _lcd){
       _lcd.calibrateTouch(nullptr, fg, bg, max(_lcd.width(), _lcd.height()) >> 3);
 
     }
-
   }
 
 void LovyanGFX_DentaroUI::update( LGFX& _lcd )
 {
-
   _lcd.getTouch(&tp);
   for(int i = 0; i < 4; i++)
   {
@@ -273,8 +359,6 @@ void LovyanGFX_DentaroUI::update( LGFX& _lcd )
     }
   }
 }
-
-
 
 void LovyanGFX_DentaroUI::updateSelectBtnID(int _selectBtnID){
  selectBtnID = _selectBtnID;
@@ -723,13 +807,13 @@ void LovyanGFX_DentaroUI::setSliderVal(int uiID, int _btnNo, float _x, float _y)
 }
 
 
-void LovyanGFX_DentaroUI::setCharMode(int _charMode){
-  charMode = _charMode;
-}
+// void LovyanGFX_DentaroUI::setCharMode(int _charMode){
+//   charMode = _charMode;
+// }
 
-int LovyanGFX_DentaroUI::getCharMode(){
-  return charMode;
-}
+// int LovyanGFX_DentaroUI::getCharMode(){
+//   return charMode;
+// }
 
 bool LovyanGFX_DentaroUI::getToggleVal(int _uiID, int _btnNo){
   int _btnID = uiBoxes[uiID].b_sNo + _btnNo;
