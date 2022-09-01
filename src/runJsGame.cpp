@@ -409,13 +409,14 @@ int RunJsGame::run(int remainTime){
       buttonState[i] = false;
   }
 
-if(pressedBtnID == 3){buttonState[0] = true;}//左
-if(pressedBtnID == 5){buttonState[1] = true;}//右
-if(pressedBtnID == 1){buttonState[2] = true;}//上
-if(pressedBtnID == 7){buttonState[3] = true;}//下
+if(pressedBtnID == 0){buttonState[0] = true;}//左
+if(pressedBtnID == 1){buttonState[1] = true;}//右
+if(pressedBtnID == 2){buttonState[2] = true;}//上
+if(pressedBtnID == 3){buttonState[3] = true;}//下
+
 if(pressedBtnID == 4){buttonState[4] = true;}//中央
-if(pressedBtnID ==12){buttonState[5] = true;}//A
-if(pressedBtnID ==13){buttonState[6] = true;}//B
+if(pressedBtnID == 5){buttonState[5] = true;}//A
+if(pressedBtnID == 6){buttonState[6] = true;}//B
 pressedBtnID = -1;
 
   if(wifiMode == NONE || wifiMode == RUN){

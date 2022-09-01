@@ -12,7 +12,7 @@ uint8_t xpos, ypos = 0;
 #define LOG_FILE_NAME "/config.csv"
 static File s_myFile;
 
-int pressedBtnID = -1;
+int pressedBtnID = -1;//この値をタッチボタン、物理ボタンの両方から操作してbtnStateを間接的に操作している
 
 //2倍拡大表示用のパラメータ
 float matrix_side[6] = {2.0,   // 横2倍
@@ -22,7 +22,7 @@ float matrix_side[6] = {2.0,   // 横2倍
                      2.0,   // 縦2倍
                      0.0    // Y座標
                     };
-                    
+
 //2倍拡大表示用のパラメータ
 float matrix_bg[6] = {2.0,   // 横2倍
                      -0.0,  // 横傾き
@@ -92,17 +92,19 @@ void dispTask(void *pvParameters) {
   while (1) {
     xSemaphoreTake(semaphore, portMAX_DELAY);
 
+
       if(flip){
-        
         tft.pushSprite(&layoutSprite,0,0);
         ui.showTouchEventInfo( layoutSprite, 120, 0 );//タッチイベントを視覚化する
         ui.showInfo( layoutSprite, 0, 0 );//ボタン情報、フレームレート情報などを表示します。
+        ui.drawPhBtns( layoutSprite );//物理ボタンの状態を表示
         layoutSprite.pushAffine(matrix_bg);
-
       }else{
 
       }
       flip = !flip;//描画は2フレにつき１回行う
+
+
     }
     delay(1);
 }
@@ -116,6 +118,8 @@ void setup()
 {
   Serial.begin(115200);
   delay(50);
+
+
 
   // タイマー作成(33.333ms)
   timer = timerBegin(0, 80, true);
@@ -149,21 +153,26 @@ void setup()
     return;
   }
 
-  ui.begin( screen, 16, 1, true);//screenスクリーンを用意
+  //screenは16ビットカラー,回転方向１,タッチキャリブレーションtrue
+  ui.begin( screen, 16, 1, true);
 
   sideSprite.setPsram(false );
   sideSprite.setColorDepth(16);//子スプライトの色深度
   sideSprite.createSprite(31, 120);//ゲーム画面用スプライトメモリ確保
   sideSprite.fillScreen(TFT_RED);
 // //  //SDからの読み込みは４Gb以下じゃないとうまく動作しないかも
-// //PNGをバッファに書いて2倍出力    
-  sideSprite.drawPngFile(SPIFFS, "/haco3/util/side.png", 0, 0);
+// //PNGをバッファに書いて2倍出力
+  sideSprite.drawPngFile(SPIFFS, "/haco3/util/side.png", 0, 0);//4ボタン
+  // sideSprite.drawPngFile(SPIFFS, "/haco3/util/side0.png", 0, 0);//
   sideSprite.pushAffine(matrix_side);
   sideSprite.deleteSprite();//描画したらメモリを解放する
-  
+
   //sprite（bg1)のボタン配置の時
-  ui.createBtns( 130,  9,  30, 44,  3, 4, TOUCH, 2);//コントローラー
-  ui.createBtns( 130, 53,  30, 66,  2, 6, TOUCH, 2);//メインメニュー
+  ui.createBtns( 130,  9,  30, 111,  1, 4, TOUCH, 2);//コントローラー4ボタン
+
+    //sprite（bg1)のボタン配置の時
+  // ui.createBtns( 130,  9,  30, 44,  3, 4, TOUCH, 2);//コントローラー
+  // ui.createBtns( 130, 53,  30, 66,  2, 6, TOUCH, 2);//メインメニュー
 
   // ui.createBtns( 3,   66,  66, 11,  6, 1, TOUCH, 2);//最後の引数でタッチエリアを2倍している
   // ui.createBtns( 97,  66,  32, 11,  4, 1, TOUCH, 2);//最後の引数でタッチエリアを2倍している
@@ -191,13 +200,16 @@ void setup()
   game->init();
   tunes.init();
   delay(1000);
+  ui.setupPhBtns( screen, 33, 39, 36);//物理ボタンをセットアップ
 }
 
 void loop() {
-
+  pressedBtnID = -1;//リセット
+  ui.updatePhBtns();//物理ボタンの状態を更新
   ui.update(screen);//タッチイベントを取るので、LGFXが基底クラスでないといけない
   if( ui.getEvent() != NO_EVENT ){//何かイベントがあれば
     if( ui.getEvent() == TOUCH ){//TOUCHの時だけ
+
     }
 
     if(ui.getEvent() == MOVE){
@@ -207,7 +219,26 @@ void loop() {
     if( ui.getEvent() == RELEASE ){//RELEASEの時だけ
       pressedBtnID = ui.getTouchBtnID();
     }
-  } 
+  }
+
+  switch (ui.getHitValue())
+  {
+  default:  layoutSprite.println("--"); break;
+  case 101: layoutSprite.println("A click");pressedBtnID = 2; break;
+  case 102: layoutSprite.println("B click");pressedBtnID = 0; break;
+  case 103: layoutSprite.println("C click");pressedBtnID = 3; break;
+  case 111: layoutSprite.println("A hold");pressedBtnID = 2; break;
+  case 112: layoutSprite.println("B hold");pressedBtnID = 1; break;
+  case 113: layoutSprite.println("C hold");pressedBtnID = 3; break;
+  case 121: layoutSprite.println("A double click");pressedBtnID = 2; break;
+  case 122: layoutSprite.println("B double click");pressedBtnID = 1; break;
+  case 123: layoutSprite.println("C double click");pressedBtnID = 3; break;
+  case 201: layoutSprite.println("AB hold"); break;
+  case 202: layoutSprite.println("AC hold"); break;
+  case 203: layoutSprite.println("BC hold"); break;
+  case 204: layoutSprite.println("ABC hold"); break;
+  case 301: layoutSprite.println("A->B->C"); break;
+  }
 
   //ゲーム
   uint32_t now = millis();
@@ -215,17 +246,6 @@ void loop() {
 
   preTime = now;
 
-  // if(wifiGame){ // debug mode
-  //   int r = wifiGame->run(remainTime);
-  //   if(r != 0){
-  //     tunes.pause();
-  //     game->pause();
-  //     free(game);
-  //     game = new RunJsGame();
-  //     game->init();
-  //     tunes.resume();
-  //   }
-  // }
   tunes.run();
   int mode = game->run(remainTime);
   //違うゲームが選ばれた時はこの処理を通る？
