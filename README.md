@@ -22,6 +22,10 @@ https://github.com/dentaro/haco3
 
 https://lang-ship.com/blog/work/esp32-2432s028r-1/
 
+物理的にボタンを配線している自作ハードや、M5Stackの場合は、以下のXのついたバージョンを利用した方が良いです。
+
+https://github.com/dentaro/haco3_JS_X
+
 コード共有用のベータ版で、バグありありです。ご了承の上、遊んでみてください。
 （少しずつ改善していきます）
 
