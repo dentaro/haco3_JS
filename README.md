@@ -4,6 +4,10 @@ letro_game_engin in JavaScript for esp32
 
 こちらはJavaScript版です。
 
+https://github.com/dentaro/haco3_JS_X
+
+タッチパネルのみも上のX版に集約できたので、しばらく上を参照ください。（こちらはあまり更新しません。）
+
 lua版はこちらです。
 https://github.com/dentaro/haco3
 
