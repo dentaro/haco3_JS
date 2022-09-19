@@ -1,76 +1,98 @@
-// setup = function(){
-// }
-// c = 0
-
-// error = function(e, x, y){
-//   color(255,0,0)
-//   text("E:" + e, x, y)
-//   color(255,255,255)
-// }
-// loop = function(){
-//     color(0,0,0)
-//     fillrect(0,0,128,128)
-
-//     var y = 0
-//     color(0,0,255)
-//     fillrect(0,0,128,9)
-//     color(255,255,255)
-//     text("== o-bako API test ==",0,y)
-
-//     y += 10
-//     text("text",0,y)
-//     text("text",50+c/10%20,y)
-//     c++
-
-//     y += 10
-//     text("drawrect", 0, y)
-//     drawrect(50+c/10%20, y, 8, 8)
-
-//     y += 10
-//     text("fillrect", 0, y)
-//     fillrect(50+c/10%20, y, 8, 8)
-
-//     try{
-//       y += 10
-//       text("pset", 0, y)
-//       pset(50+c/10%20, y)
-//     }catch(e){
-//       error(e, 50, y)
-//     }
-
-//     try{
-//       y += 10
-//       text("spr", 0, y)
-//       spr(50+c/10%20, y, 16, 16, 0, 0)
-//     }catch(e){
-//       error(e, 50, y)
-//     }
-// }
-
-
+counter = 0
+modetitle = 0;
+modegame = 1;
+modeover = 2;
+mode = modetitle;
+bx=42
+by=33
+sx=0
+sy=0
+prebx = 0;
+preby = 0;
+scene = 0;//引数に意味はない
+firstF = true;
+// scenemap = 0;
+MapReadF = true ;
 setup = function(){
-  color(0,0,0)
-  fillrect(0,0,128,128)
 }
-
-c = 0
-x = 16
-y = 32
-var t = 1
-
 loop = function(){
-  color(0,0,0)
-  fillrect(0,0,128,128)
-  //背景を描く
-  // for (var i = 0; i<15; i++){
-  //    for (var j = 0; j<15; j++){
-  //      spr(i*8, j*8, 8, 8, 8*1, 8*13)
-  //    }
-  // }
-　if(btn(0) > 0){walk = 0;step = 1;x -= step;}
-　if(btn(1) > 0){walk = 0;step = 1;x += step;}
-　if(btn(2) > 0){walk = 0;step = 1;y -= step;}
-　if(btn(3) > 0){walk = 0;step = 1;y += step;}
-  spr(x%128, y%128, 8, 8, 8*4, 8*14)
-  c ++
+    game()
+    // if (mode == modetitle)title()
+    // else if(mode == modegame)game()
+    // else if(mode == modeover)over()
+    // counter++
 }
+title = function(){
+    // if( btn(2) == true ){
+    //     mode = modegame;
+    // }
+}
+over = function(){
+    color(2)
+    fillrect(0,0,128,128)
+    color(7)
+    text("ゲームオーバー",32, 52)
+    if( btn(2) == true )mode = modetitle
+}
+game = function(){
+    if(MapReadF == true){
+        drawmap(0);//config読み込み~表示まで,引数関係なし
+        MapReadF = false;
+    }
+
+    if( btn(0) == true )bx--
+    if( btn(1) == true )bx++
+    if( btn(2) == true )by--
+    if( btn(3) == true )by++
+
+    if(bx<0)bx = 256
+    if(by<0)by = 256
+
+    sx = (bx + 8)%256//キャラの位置を割り出す//画面左上の内部処理と一致させている
+    sy = (by + 7)%256
+
+    if(scene == 0){
+        if(sx == 40 && sy == 40){//街を出たら
+            scene = 1;
+            mapno(1);//congig書き込み、表示、データ読み込みまで
+        }
+    }else if(scene == 1){
+        if(sx == 42 && sy == 42){//街を出たら
+            scene = 0;
+            mapno(0);//congig書き込み、表示、データ読み込みまで
+        }
+    }
+
+    // switch (scene){
+    //     case 0:
+    //         if(sx == 40 && sy == 40){//街を出たら
+    //             scene = 1;
+    //             mapno(1);//congig書き込み、表示、データ読み込みまで
+    //         }
+    //         break;
+    //     case 1:
+    //         if(sx == 42 && sy == 42){//街を出たら
+    //             scene = 0;
+    //             mapno(0);//congig書き込み、表示、データ読み込みまで
+    //         }
+    //         break;
+    // }
+
+    //マップを描画
+    if(prebx != bx||preby != by){
+        
+        bg(bx,by,128,128);
+        spr(64,56,8,8,0,0)
+        prebx = bx;
+        preby = by;
+    }
+
+    if(firstF == true){
+        color(1);
+        fillrect(0,0,30,30);
+        firstF = false;
+    }
+    // scene = -1;
+}
+
+
